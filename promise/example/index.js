@@ -1,35 +1,63 @@
-const Promise = require("../src/core");
-
-const PENDING = 0;
-const FULFILLED = 1;
-const REJECTED = 2;
-const DEFERRED = 3;
+const PENDING = 'pending';
+const FULFILLED = 'fulfilled';
+const REJECTED = 'rejected';
+const DEFERRED = 'deferred';
 
 function asap(fn) {
-    asap.fn = fn;
+    setTimeout(() => {
+        fn()
+    }, 0);
+}
 
-}
-asap.init = function () {
-    const node = document.createTextNode('1');
-    const observer = new MutationObserver(asap.callback);  
-    observer.observe(node, { characterData: true });
-    asap.flush();
-}
-asap.callback = function() {
-    asap.fn();
-}
+function noop() {}
 
 function isSimple(value) {
     return (typeof value !== 'object' && typeof value !== 'function') || value === null;
 }
 
-function noop() {}
+function generatePromise(value, state) {
+    var promise = new PromiseKB(noop);
+    promise._state = state;
+    promise._value = value;
+    return p;
+}
+
+// 处理 Promise 被继承并且重写了 then 方法时的情况
+function safeThen(promise, onFulfilled, onRejected) {
+    return new promise.constructor(function (resolve, reject) {
+        var res = new Promise(noop);
+        res.then(resolve, reject);
+        handleThen(promise, new Deferred(res, onFulfilled, onRejected));
+    });
+}
+
+function execResolver(promise, fn) {
+    let done = false;
+    try {
+        fn(
+            function resolve(value) {
+                if (done === true) return;
+                done = true;
+                handleResolve(promise, value);
+            },
+            function reject(reason) {
+                if (done === true) return;
+                done = true;
+                handleReject(promise, reason);
+            }
+        );
+    } catch (err) {
+        if (done === true) return;
+        done = true;
+        handleReject(promise, err);
+    }
+}
 
 function handleDeferred(promise) {
-    promise._deferred.forEach(function(deferred) {
-        handleSettled(promise, deferred);
+    promise._deferreds.forEach(function(deferred) {
+        handleThen(promise, deferred);
     });
-    promise._deferred = [];
+    promise._deferreds = [];
 }
 
 function handleResolve(promise, value) {
@@ -37,10 +65,11 @@ function handleResolve(promise, value) {
         handleReject(promise, new TypeError('A promise cannot be resolved with itself.'));
         return;
     }
+
     if (isSimple(value)) {
         promise._state = FULFILLED;
         promise._value = value;
-        handleDeferred();
+        handleDeferred(promise);
         return
     }
 
@@ -52,19 +81,19 @@ function handleResolve(promise, value) {
         return;
     }
 
-    if (then === promise.then && value instanceof Promise) {
+    if (then === promise.then && value instanceof PromiseKB) {
         promise._state = DEFERRED;
         promise._value = value;
-        handleDeferred();
+        handleDeferred(promise);
         return;
     }
     if (typeof then === 'function') {
-        execFn(then.bind(value), promise);
+        execResolver(promise, then.bind(value));
         return;
     }
     promise._state = FULFILLED;
     promise._value = value;
-    handleDeferred();
+    handleDeferred(promise);
 }
 
 function handleReject(promise, reason) {
@@ -84,45 +113,29 @@ function handleSettled(promise, deferred) {
             }
             return;
         }
+        let value;
         try {
-            const value = cb(promise._value);
-            handleResolve(deferred.promise, value);
+            value = cb(promise._value);
         } catch (err) {
             handleReject(deferred.promise, err);
+            return;
         }
+        handleResolve(deferred.promise, value);
     });
 }
 
-function execFn(fn, promise) {
-    let done = false;
-    try {
-        fn(
-            function resolve(value) {
-                if (done === true) return;
-                done = true;
-                handleResolve(promise, value);
-            },
-            function reject(reason) {
-                if (done === true) return;
-                done = true;
-                handleReject(promise, reason);
-            }
-        );
-    } catch (err) {
-        if (done === true) return;
-        done = true;
-        handleReject(promise, reason);
+function handleThen(promise, deferred) {
+    while(promise._state === DEFERRED) {
+        promise = promise._value;
+    }
+    if (promise._state === PENDING) {
+        promise._deferreds.push(deferred);
+    } else {
+        handleSettled(promise, deferred);
     }
 }
 
-function generatePromise(value, status) {
-    var p = new Promise(noop);
-    p._state = status;
-    p._value = value;
-    return p;
-}
-
-class Handler {
+class Deferred {
     constructor(promise, onFulfilled, onRejected) {
         this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
         this.onRejected = typeof onRejected === 'function' ? onRejected : null;
@@ -130,45 +143,40 @@ class Handler {
     }
 }
 
-class Promise {
+class PromiseKB {
     constructor(fn) {
         if (typeof fn !== 'function') {
             throw new TypeError('fn must be a function')
         }
         this._state = PENDING;
         this._value = undefined;
-        this._deferred = [];
+        this._deferreds = [];
         if (fn === noop) return;
-        execFn(fn, this);
+        execResolver(this, fn);
     }
 
     then(onFulfilled, onRejected) {
-        const nextPromise = new Promise(noop);
-        const deferred = new Handler(nextPromise, onFulfilled, onRejected);
-        let promise = this;
-        while(promise._state === DEFERRED) {
-            promise = promise._value;
+        if (this.constructor !== PromiseKB) {
+            return safeThen(this, onFulfilled, onRejected);
         }
-        if (promise._state === PENDING) {
-            promise._deferred.push(deferred);
-        } else {
-            handleSettled(promise, deferred);
-        }
+        const nextPromise = new PromiseKB(noop);
+        handleThen(this, new Deferred(nextPromise, onFulfilled, onRejected));
         return nextPromise;
     }
 
     resolve(value) {
-        if (value instanceof Promise) return value;
+        if (value instanceof PromiseKB) return value;
         if (isSimple(value)) return generatePromise(value, FULFILLED);
-        
+
         let then;
         try {
             then = value.then;
-            if (typeof then === 'function') {
-                return new Promise(then.bind(value));
-            }
         } catch (err) {
             return generatePromise(err, REJECTED)
+        }
+
+        if (typeof then === 'function') {
+            return new PromiseKB(then.bind(value));
         }
         return generatePromise(value, FULFILLED)
     }
@@ -180,4 +188,39 @@ class Promise {
     catch(onRejected) {
         return this.then(null, onRejected);
     }
+    
+    /*
+        实现点：
+        1. callback 不接受任何参数, 无论 promise 是成功还是失败都会执行 callback
+        2. finally 执行返回一个新的 promise, 新 promise 的状态和值由以下条件决定
+            callback 执行出错，新 promise 状态变为 rejected, 值为错误信息
+            callback 执行返回 promise, 新 promise 的状态由该 promise 决定
+            callback 执行正常，新 promise 的状态和值同上一个 promise
+    */
+    finally(callback) {
+        return this.then(
+            function resolve(value) {
+                return PromiseKB.resolve(callback()).then(function() {
+                    return value;
+                });
+            },
+            function reject(reason) {
+                return PromiseKB.resolve(callback()).then(function() {
+                    throw reason;
+                });
+            }
+        )
+    }
 }
+
+
+// PromiseKB test
+PromiseKB.defer = PromiseKB.deferred = function(){
+    const dfd = {};
+    dfd.promise = new PromiseKB((resolve, reject)=>{
+        dfd.resolve = resolve;
+        dfd.reject = reject;
+    });
+    return dfd;
+}
+module.exports = PromiseKB;
