@@ -15,6 +15,10 @@ function isSimple(value) {
     return (typeof value !== 'object' && typeof value !== 'function') || value === null;
 }
 
+function iterableToArray(value) {
+    return Array.from(value);
+}
+
 function generatePromise(value, state) {
     var promise = new PromiseKB(noop);
     promise._state = state;
@@ -210,6 +214,23 @@ class PromiseKB {
                 });
             }
         )
+    }
+
+    /*
+        实现点:
+        1. iterable 若是不可迭代的，race 方法返回的 promise 将变为 reject
+        2. 返回 promise 的状态由任何一个settled元素的状态决定, 
+    */
+    race(iterable) {
+        return new PromiseKB((resolve, reject) => {
+            iterableToArray(iterable).forEach(function(value) {
+                PromiseKB.resolve(value).then(resolve, reject);
+            });
+        })
+    }
+
+    all(iterable) {
+
     }
 }
 
