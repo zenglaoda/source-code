@@ -56,6 +56,9 @@ RawTask.prototype.call = function () {
             // In a web browser, exceptions are not fatal. However, to avoid
             // slowing down the queue of pending tasks, we rethrow the error in a
             // lower priority turn.
+            // 延迟错误信息的抛出，防止因为其中某一个 task 执行的错误导致后面 task 执行的中断
+            // 若使用 setTimeout 来实现则无需考虑该情况。但是使用 MutationObserve 实现需要考虑该问题
+            // 要求做到能够抛出错误信息且不中断程序的执行
             pendingErrors.push(error);
             requestErrorThrow();
         }

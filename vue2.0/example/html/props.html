@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="'./../../js/utils.js"></script>
+    <script src="./../../dist/vue.js"></script>
+    <script src="../components/button/index.js"></script>
+</head>
+<body>
+
+    <div id="app">
+        <el-button round>点击</el-button>
+    </div>
+    <script>
+        // vue 对 props Boolean 类型定义处在特殊处理,
+        var cm = new Vue({
+            el: '#app',
+            data() {
+                return {};
+            },
+        })
+    </script>
+</body>
+</html>

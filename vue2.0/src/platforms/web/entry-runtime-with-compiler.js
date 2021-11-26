@@ -1,16 +1,16 @@
 /* @flow */
 
 /***
- * 重写挂载方法$mount,将template属性代表的html字符串解析成render，staticRenderFns函数
+ * 重写挂载方法$mount,将template，el 属性代表的html字符串解析成render，staticRenderFns函数
  */
 
-// 加载Vue 全局配置
+// 加载 Vue 全局配置
 import config from 'core/config'
 
-// 加载警告缓存方法
+// 加载警告,缓存方法
 import { warn, cached } from 'core/util/index'
 
-// 加载标记与测量函数
+// 加载标记,测量函数
 import { mark, measure } from 'core/util/perf'
 
 import Vue from './runtime/index'

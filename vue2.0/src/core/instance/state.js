@@ -65,6 +65,7 @@ export function initState (vm: Component) {
 
 // _props
 function initProps (vm: Component, propsOptions: Object) {
+  // 父组件传递过来的 props 属性值
   const propsData = vm.$options.propsData || {}
   const props = vm._props = {}
   // cache prop keys so that future props updates can iterate using Array
@@ -72,12 +73,13 @@ function initProps (vm: Component, propsOptions: Object) {
   const keys = vm.$options._propKeys = []
   const isRoot = !vm.$parent
   // root instance props should be converted
-  // 非根组件的props不需要被深度监听
   if (!isRoot) {
     toggleObserving(false)
   }
   for (const key in propsOptions) {
     keys.push(key)
+    // 根据 propsData, props类型定义获取属性值
+    // Boolean 类型特殊处理
     const value = validateProp(key, propsOptions, propsData, vm)
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {

@@ -28,6 +28,8 @@ export function validateProp (
   const absent = !hasOwn(propsData, key)
   let value = propsData[key]
   // boolean casting
+  // 属性值是 Boolean 类型的时候, propsData 中没有定义属性值, props 属性定义时没有default的时候
+  // props: { key: { type: [Boolean, String]}} 
   const booleanIndex = getTypeIndex(Boolean, prop.type)
   if (booleanIndex > -1) {
     if (absent && !hasOwn(prop, 'default')) {

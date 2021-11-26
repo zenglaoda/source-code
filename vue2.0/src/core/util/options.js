@@ -321,6 +321,15 @@ export function validateComponentName (name: string) {
  * 
  * 格式化props属性，props: string[] | Object 
  * props中以"-"连接的属性名会被转化成驼峰命名
+ * pros 定义方式:
+ *    1. props: string[]
+ *    2. props: {
+ *          name: String,
+ *          id: {
+ *            type: Number,
+ *            default: 1
+ *          }
+ *        }
  */
 function normalizeProps (options: Object, vm: ?Component) {
   const props = options.props
@@ -358,7 +367,7 @@ function normalizeProps (options: Object, vm: ?Component) {
 
 /**
  * Normalize all injections into Object-based format
- * inject属性 inject: string[] | {}
+ * inject属性 inject: string[] | {from: string, default: any }
  */
 function normalizeInject (options: Object, vm: ?Component) {
   const inject = options.inject

@@ -3230,6 +3230,7 @@
     }
 
     // extract props
+    // debugger
     var propsData = extractPropsFromVNodeData(data, Ctor, tag);
 
     // functional component
