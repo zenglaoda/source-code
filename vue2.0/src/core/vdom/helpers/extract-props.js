@@ -9,6 +9,7 @@ import {
   formatComponentName
 } from 'core/util/index'
 
+// 根据 props 定义从数据对象的 props,attrs 属性中提取 prop 值
 export function extractPropsFromVNodeData (
   data: VNodeData,
   Ctor: Class<Component>,
@@ -43,6 +44,9 @@ export function extractPropsFromVNodeData (
           )
         }
       }
+
+      // 若 propOptions 中定义的键 在data.props 中存在，则提取 data.props 中的值,
+      // 若 propOptions 中定义的键 在data.attrs 中存在，则提取 data.attrs 中的值,并删除
       checkProp(res, props, key, altKey, true) ||
       checkProp(res, attrs, key, altKey, false)
     }

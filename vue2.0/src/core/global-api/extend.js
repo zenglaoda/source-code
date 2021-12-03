@@ -21,6 +21,7 @@ export function initExtend (Vue: GlobalAPI) {
 
   /**
    * Class inheritance
+   * 使用 extendOptions 配置继承不同的父类
    */
   Vue.extend = function (extendOptions: Object): Function {
     extendOptions = extendOptions || {}

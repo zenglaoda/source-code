@@ -36,7 +36,7 @@ export default class Watcher {
   active: boolean;
   deps: Array<Dep>;
   newDeps: Array<Dep>;
-  depIds: SimpleSet;
+  depIds: SimpleSet; // 该 watcher 的所有依赖 dep
   newDepIds: SimpleSet;
   before: ?Function;
   getter: Function;

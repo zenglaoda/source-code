@@ -3172,7 +3172,8 @@
 
   var hooksToMerge = Object.keys(componentVNodeHooks);
 
-  function createComponent (
+  function 
+  createComponent (
     Ctor,
     data,
     context,
@@ -3519,6 +3520,7 @@
     };
 
     Vue.prototype._render = function () {
+      debugger
       var vm = this;
       var ref = vm.$options;
       var render = ref.render;
@@ -4952,6 +4954,7 @@
 
   function initMixin (Vue) {
     Vue.prototype._init = function (options) {
+            
       var vm = this;
       // a uid
       vm._uid = uid$3++;

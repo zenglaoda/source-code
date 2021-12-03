@@ -263,6 +263,7 @@ function createComputedGetter (key) {
         watcher.evaluate()
       }
       if (Dep.target) {
+        // 将 计算属性的所有依赖添加到 vm._watcher(renderWatch)
         watcher.depend()
       }
       return watcher.value

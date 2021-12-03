@@ -40,6 +40,7 @@ export function createAsyncPlaceholder (
   return node
 }
 
+// 获取异步组件
 export function resolveAsyncComponent (
   factory: Function,
   baseCtor: Class<Component>
@@ -48,6 +49,7 @@ export function resolveAsyncComponent (
     return factory.errorComp
   }
 
+  // 当组件已加载完返回组件构造函数
   if (isDef(factory.resolved)) {
     return factory.resolved
   }
@@ -68,13 +70,15 @@ export function resolveAsyncComponent (
     let timerLoading = null
     let timerTimeout = null
 
-    ;(owner: any).$on('hook:destroyed', () => remove(owners, owner))
+    ;(owner).$on('hook:destroyed', () => remove(owners, owner))
 
     const forceRender = (renderCompleted: boolean) => {
       for (let i = 0, l = owners.length; i < l; i++) {
-        (owners[i]: any).$forceUpdate()
+        // 强制更新父组件
+        (owners[i]).$forceUpdate()
       }
 
+      // 清楚定时器
       if (renderCompleted) {
         owners.length = 0
         if (timerLoading !== null) {
@@ -111,17 +115,22 @@ export function resolveAsyncComponent (
       }
     })
 
+    // Promise<options>, options, asyncComponentOptions
+    // 直接返回一个 Promise<options> 或者 asyncComponentOptions
     const res = factory(resolve, reject)
 
     if (isObject(res)) {
       if (isPromise(res)) {
-        // () => Promise
+        // () => Promise Promise<options>
         if (isUndef(factory.resolved)) {
           res.then(resolve, reject)
         }
+
+        // asyncComponentOptions
+        // 异步组件工厂函数返回一个对象
       } else if (isPromise(res.component)) {
         res.component.then(resolve, reject)
-
+        
         if (isDef(res.error)) {
           factory.errorComp = ensureCtor(res.error, baseCtor)
         }

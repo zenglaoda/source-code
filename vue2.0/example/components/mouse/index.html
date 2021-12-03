@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="'../../../../js/utils.js"></script>
+    <script src="../../../../vue2.0/dist/vue.js"></script>
+    <!-- <script src="../../components/mouse/index.js"></script> -->
+
+    <script type="text/x-template" id="el-mouse">
+        <div>
+            <slot :left="left" :top="top">dynamic fallback node</slot>
+            <slot name="static">static fallback node</slot>
+        </div>
+    </script>
+    
+    <div id="app">
+        <el-mouse>
+            <template slot-scope="{left, top}">
+                left: {{left}}
+                top: {{top}}
+            </template>
+            <div slot="static">
+                静态插槽
+            </div>
+        </el-mouse>
+    </div>
+    
+    <script>
+        const elMouseOption = {
+            template: '#el-mouse',
+            data() {
+                return {
+                    left: 0,
+                    top: 0,
+                };
+            },
+            mounted() {
+                const callback = (event) => {
+                    this.left = event.x;
+                    this.top = event.y;
+                };
+
+                document.addEventListener('click', callback, false);
+                this.$once('hook:beforeDestroy', () => {
+                    document.removeEventListener('click', callback, false);
+                });
+                console.log(this);
+                console.log(this.$options.render.toString());
+            }
+        };
+        const vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                };
+            },
+            components: {
+                elMouse: elMouseOption
+            },
+            mounted() {
+                console.log(this.$options.render.toString());
+            }
+        });
+    </script>
+</body>
+</html>
+<script>
+function anonymous() {
+    with(this){
+        return _c('div',
+            [
+                _t("default",null,{"left":left,"top":top}),
+                _v(" "),
+                _t("static")
+            ],2
+        )
+    }
+}
+function anonymous() {
+    with(this){
+        return _c('div',
+            {attrs:{"id":"app"}},
+            [
+                _c('el-mouse',
+                    {scopedSlots:_u([{key:"default",fn:function({left, top}){return [_v("\n                left: "+_s(left)+"\n                top: "+_s(top)+"\n            ")]}}])},
+                    [
+                        _v(" "),
+                        _c('div',
+                            {attrs:{"slot":"demo"},slot:"demo"},
+                            [_v("\n                demo\n            ")]
+                        )
+                    ]
+                )],1
+        )
+    }
+}
+</script>

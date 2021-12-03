@@ -22,7 +22,10 @@ export function initRender (vm: Component) {
   const options = vm.$options
   const parentVnode = vm.$vnode = options._parentVnode // the placeholder node in parent tree
   const renderContext = parentVnode && parentVnode.context
+
+  // 插槽 vnode 节点是在父组件环境生成的，[vnode]=> {[vnode.data.slot]: vnode}
   vm.$slots = resolveSlots(options._renderChildren, renderContext)
+  
   vm.$scopedSlots = emptyObject
   // bind the createElement fn to this instance
   // so that we get proper render context inside it.

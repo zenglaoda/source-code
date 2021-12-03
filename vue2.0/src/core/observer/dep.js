@@ -24,20 +24,24 @@ export default class Dep {
     this.subs = []
   }
 
+  // 订阅
   addSub (sub: Watcher) {
     this.subs.push(sub)
   }
 
+  // 移除订阅
   removeSub (sub: Watcher) {
     remove(this.subs, sub)
   }
 
+  // 将 watcher 添加到 subs, 同时将 dep 添加到 watch.newDeps
   depend () {
     if (Dep.target) {
       Dep.target.addDep(this)
     }
   }
 
+  // 发布更新通知
   notify () {
     // stabilize the subscriber list first
     const subs = this.subs.slice()

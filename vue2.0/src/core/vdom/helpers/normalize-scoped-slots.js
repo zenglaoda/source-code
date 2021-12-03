@@ -46,7 +46,7 @@ export function normalizeScopedSlots (
   // avoriaz seems to mock a non-extensible $scopedSlots object
   // and when that is passed down this would cause an error
   if (slots && Object.isExtensible(slots)) {
-    (slots: any)._normalized = res
+    (slots)._normalized = res
   }
   def(res, '$stable', isStable)
   def(res, '$key', key)
