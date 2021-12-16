@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../../dist/vue.global.js"></script>
+</head>
+<body>
+    <style>
+        .el-input {
+            height: 36px;
+            padding: 0 10px;
+            line-height: 36px;
+            border: 1px solid #dddd;
+            border-radius: 4px;
+            outline: thistle;
+        }
+    </style>
+    <div id="app">
+        <input type="text" v-model="name" class="el-input">
+        <p>
+            {{name}}
+        </p>
+    </div>
+    <script>
+        const vm = Vue.createApp({
+            data() {
+                return {
+                    name: ''
+                };
+            },
+            setup(props, context) {
+            }
+        });
+        const v = vm.mount('#app');
+        console.log(vm);
+        console.log(v)
+    </script>
+
+</body>
+</html>

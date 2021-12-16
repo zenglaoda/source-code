@@ -13,6 +13,7 @@
   "dependencies": {
     "co": "^4.6.0",
     "promise": "^8.1.0",
+    "vue": "^2.6.14",
     "vue-promised": "^1.2.2"
   },
   "devDependencies": {
