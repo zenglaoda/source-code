@@ -11,7 +11,7 @@
     app.use()
 ```
 
-### 声明组件会出发的事件,并检验事件参数
+### 声明组件会触发的事件,并检验事件参数
 ```javascript
     var options = {
         /** @type {string[], object} */
@@ -89,10 +89,15 @@ var options = {
 onBeforeMount, onMounted, onBeforeUpdate, onUpdated等
 
 ### 组合式API
-ref, 
+ref, // 参数为原始值时包装一下,对象时调用 reactive方法
+toRef, // 在响应式对象上添加一个新的响应式属性
+toRefs, // 用于对象的解构
 reactive, 
 provide, 
 inject,
+computed,
+watch,
+watchEffect,
 
 ```javascript
 import { ref, reactive } from 'vue';
@@ -101,3 +106,13 @@ import { ref, reactive } from 'vue';
 // reactive
 
 ```
+
+
+
+### 新增组件
+1. teleport
+
+### 组件选项
+1. expose
+2. emits
+3. 去除 filters

@@ -4656,7 +4656,6 @@ var Vue = (function (exports) {
                         // store app context on the root VNode.
                         // this will be set on the root instance on initial mount.
                         vnode.appContext = context;
-                        console.log(vnode);
                         
                         // HMR root reload
                         {
@@ -7698,7 +7697,6 @@ var Vue = (function (exports) {
     }
     let isInSSRComponentSetup = false;
     function setupComponent(instance, isSSR = false) {
-        debugger
         isInSSRComponentSetup = isSSR;
         const { props, children } = instance.vnode;
         const isStateful = isStatefulComponent(instance);
