@@ -81,7 +81,7 @@ export function effectScope(detached?: boolean) {
 
 export function recordEffectScope(
   effect: ReactiveEffect,
-  scope?: EffectScope | null
+  scope?: EffectScope | null // instance.scope
 ) {
   scope = scope || activeEffectScope
   if (scope && scope.active) {

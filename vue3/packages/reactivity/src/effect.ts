@@ -52,7 +52,7 @@ export const MAP_KEY_ITERATE_KEY = Symbol(__DEV__ ? 'Map key iterate' : '')
 
 export class ReactiveEffect<T = any> {
   active = true
-  deps: Dep[] = []
+  deps: Dep[] = [] // 响应数据键
 
   // can be attached after creation
   computed?: boolean
@@ -64,7 +64,7 @@ export class ReactiveEffect<T = any> {
   onTrigger?: (event: DebuggerEvent) => void
 
   constructor(
-    public fn: () => T,
+    public fn: () => T, // componentUpdateFn
     public scheduler: EffectScheduler | null = null,
     scope?: EffectScope | null
   ) {
@@ -114,6 +114,7 @@ export class ReactiveEffect<T = any> {
   }
 }
 
+// 清除 effect 关联的 deps
 function cleanupEffect(effect: ReactiveEffect) {
   const { deps } = effect
   if (deps.length) {
@@ -225,6 +226,7 @@ export function trackEffects(
   }
 
   if (shouldTrack) {
+    // 收集依赖
     dep.add(activeEffect!)
     activeEffect!.deps.push(dep)
     if (__DEV__ && activeEffect!.onTrack) {

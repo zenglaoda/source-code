@@ -68,12 +68,13 @@ export type EmitFn<
       }[Event]
     >
 
-
+// 触发 props 对象上的方法
 export function emit(
   instance: ComponentInternalInstance,
   event: string,
   ...rawArgs: any[]
 ) {
+  // rootProps
   const props = instance.vnode.props || EMPTY_OBJ
 
   if (__DEV__) {

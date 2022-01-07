@@ -78,6 +78,30 @@ function createArrayInstrumentations() {
   return instrumentations
 }
 
+/*
+var obj = {
+    count: 0,
+    get getCount() {
+        return this.count;
+    }
+};
+var proxy = new Proxy(obj, {
+    get(target, key, receiver) {
+        console.log(`get ${key}`);
+        const value = Reflect.get(target, key, receiver);
+        return value;
+    },
+    set(target, key, value, receiver) {
+        console.log(`set ${key}=${value}`);
+        Reflect.set(target, key, value, receiver);
+    }
+});
+proxy.getCount;
+// get getCount
+// get count
+
+*/
+
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target: Target, key: string | symbol, receiver: object) {
     if (key === ReactiveFlags.IS_REACTIVE) {

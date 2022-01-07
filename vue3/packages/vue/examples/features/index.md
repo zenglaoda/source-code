@@ -78,6 +78,7 @@ var options = {
         
     }
 }
+// 0. setup 函数是组合式 API 的基础
 // 1. setup 生命周期里面的 this 不是组件实例,
 // 2. setup 返回对象时, 该对象里面的属性会被合并到其他选项里面
 // 3. setup 生命周期函数只会执行一会
@@ -89,15 +90,28 @@ var options = {
 onBeforeMount, onMounted, onBeforeUpdate, onUpdated等
 
 ### 组合式API
-ref, // 参数为原始值时包装一下,对象时调用 reactive方法
-toRef, // 在响应式对象上添加一个新的响应式属性
-toRefs, // 用于对象的解构
-reactive, 
-provide, 
+ref:
+    对于原始值将其包装成一个对象，对于对象调用 reactive方法
+toRef:
+    可以用来为源响应式对象上的某个 property 新创建一个 ref
+toRefs:
+    将响应式对象转换为普通对象，其中结果对象的每个 property 都是指向原始对象相应 property 的 ref
+reactive:
+    递归监听属性
+provide:
+
 inject,
 computed,
-watch,
-watchEffect,
+    返回一个 readonly 的 ref
+
+watch:
+    需要侦听特定的数据源,当提供的数据源发生变化时执行回调函数
+watchEffect: {flush: 'pre'}(在DOM更新前执行)
+    它立即执行传入的一个函数，同时响应式追踪其依赖，并在其依赖变更时重新运行该函数
+
+watchPostEffect: 在 DOM 更新后执行
+
+watchSyncEffect,
 
 ```javascript
 import { ref, reactive } from 'vue';
@@ -106,8 +120,6 @@ import { ref, reactive } from 'vue';
 // reactive
 
 ```
-
-
 
 ### 新增组件
 1. teleport

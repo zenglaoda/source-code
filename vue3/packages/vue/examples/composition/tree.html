@@ -22,7 +22,7 @@
 </script>
 <!-- item script -->
 <script>
-const { reactive, computed, toRefs } = Vue
+const { reactive, computed, toRefs, watch } = Vue
 
 const TreeItem = {
   name: 'TreeItem', // necessary for self-reference
@@ -31,11 +31,14 @@ const TreeItem = {
     model: Object
   },
   setup(props) {
+    const isFolder = computed(() => {
+      return props.model.children && props.model.children.length
+    });
+    console.log(isFolder);
+
     const state = reactive({
       open: false,
-      isFolder: computed(() => {
-        return props.model.children && props.model.children.length
-      })
+      isFolder
     })
 
     function toggle() {

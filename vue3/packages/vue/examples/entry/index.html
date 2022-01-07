@@ -23,19 +23,32 @@
         <p>
             {{name}}
         </p>
+        <p>
+            {{count}}
+            <button @click="addCount">Add</button>
+        </p>
     </div>
     <script>
-        const vm = Vue.createApp({
+        const { ref } = Vue;
+        const app = Vue.createApp({
             data() {
                 return {
-                    name: ''
+                    name: '',
                 };
             },
             setup(props, context) {
-            }
+                const count = ref(0);
+                function addCount() {
+                    count.value += 1;
+                }
+                return {
+                    count,
+                    addCount
+                };
+            },
         });
-        const v = vm.mount('#app');
-        console.log(vm);
+        app.mount('#app');
+        console.log(app._component.render.toString());
     </script>
 
 </body>

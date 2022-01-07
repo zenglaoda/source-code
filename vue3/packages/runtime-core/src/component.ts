@@ -476,9 +476,12 @@ export function createComponentInstance(
     directives: null,
 
     // resolved props and emits options
-    // 声明这个组件可接受的 props
+    // NormalizedPropsOptions = [
+    //   normalized, // 格式化之后的属性定义
+    //   needCastKeys // camelize之后类型为 boolean 或存在  default 定义的键
+    // ]
     propsOptions: normalizePropsOptions(type, appContext),
-    // 声明这个组件可触发的事件
+    // 声明这个组件可触发的事件 {}
     emitsOptions: normalizeEmitsOptions(type, appContext),
 
     // emit
@@ -533,6 +536,7 @@ export function createComponentInstance(
     instance.ctx = { _: instance }
   }
   instance.root = parent ? parent.root : instance
+  // 注册 emit 方法，同时绑定 instance 参数
   instance.emit = emit.bind(null, instance)
 
   // apply custom element special handling
@@ -581,8 +585,8 @@ export function setupComponent(
 ) {
   isInSSRComponentSetup = isSSR
 
-  const { props /* props 传递的属性值 */, children } = instance.vnode
-  const isStateful = isStatefulComponent(instance)
+  const { props /* rootProps */, children } = instance.vnode
+  const isStateful = isStatefulComponent(instance) // 4
   // 获取属性值
   initProps(instance, props, isStateful, isSSR)
   initSlots(instance, children)
@@ -635,6 +639,7 @@ function setupStatefulComponent(
   // 2. call setup()
   const { setup } = Component
   if (setup) {
+    // setup(props, context) 创建 context
     const setupContext = (instance.setupContext =
       setup.length > 1 ? createSetupContext(instance) : null)
 

@@ -1232,6 +1232,7 @@ function baseCreateRenderer(
       if (__DEV__) {
         startMeasure(instance, `init`)
       }
+      // 初始化 props, attrs, render 方法， ctx
       setupComponent(instance)
       if (__DEV__) {
         endMeasure(instance, `init`)

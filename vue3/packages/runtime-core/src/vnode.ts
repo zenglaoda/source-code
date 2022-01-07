@@ -403,14 +403,15 @@ function createBaseVNode(
   const vnode = {
     __v_isVNode: true,
     __v_skip: true,
-    type,
-    props, // props 属性值
+    type, // rootComponent as ConcreteComponent
+    // listeners, key, ref 等都是通过 rootProps 传递
+    props, // rootProps
     key: props && normalizeKey(props),
     ref: props && normalizeRef(props),
     scopeId: currentScopeId,
     slotScopeIds: null,
     children,
-    component: null,
+    component: null, // createComponentInstance
     suspense: null,
     ssContent: null,
     ssFallback: null,

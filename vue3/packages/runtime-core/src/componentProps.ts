@@ -148,9 +148,10 @@ type NormalizedProp =
 export type NormalizedProps = Record<string, NormalizedProp>
 export type NormalizedPropsOptions = [NormalizedProps, string[]] | []
 
+// 获取 instance.props 与 instance.attrs
 export function initProps(
   instance: ComponentInternalInstance,
-  rawProps: Data | null,
+  rawProps: Data | null, // vnode.props
   isStateful: number, // result of bitwise flag comparison
   isSSR = false
 ) {
@@ -321,11 +322,14 @@ export function updateProps(
 
 function setFullProps(
   instance: ComponentInternalInstance,
-  rawProps: Data | null,
-  props: Data,
+  rawProps: Data | null, // vnode.props
+  props: Data, // props : Data = {}
   attrs: Data
 ) {
-  const [options, needCastKeys] = instance.propsOptions
+  const [
+    options,  // 格式化之后的 props 定义
+    needCastKeys /** boolean 类型转换相关属性*/
+  ] = instance.propsOptions
   let hasAttrsChanged = false
   let rawCastValues: Data | undefined
   if (rawProps) {
@@ -444,6 +448,7 @@ function resolvePropValue(
   return value
 }
 
+// 格式化 type.props 配置
 export function normalizePropsOptions(
   comp: ConcreteComponent,
   appContext: AppContext,
@@ -511,7 +516,9 @@ export function normalizePropsOptions(
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type)
           const stringIndex = getTypeIndex(String, prop.type)
+          // 存在 boolean 类型声明
           prop[BooleanFlags.shouldCast] = booleanIndex > -1
+          // boolean 类型声明比 string类型较前或没有string类型声明
           prop[BooleanFlags.shouldCastTrue] =
             stringIndex < 0 || booleanIndex < stringIndex
           // if the prop needs boolean casting or default value
@@ -523,7 +530,11 @@ export function normalizePropsOptions(
     }
   }
 
-  const res: NormalizedPropsOptions = [normalized, needCastKeys]
+
+  const res: NormalizedPropsOptions = [
+    normalized, // 格式化之后的属性定义
+    needCastKeys // camelize之后类型为 boolean 或存在  default 定义的键
+  ]
   cache.set(comp, res)
   return res
 }

@@ -162,8 +162,8 @@ export function createAppContext(): AppContext {
     directives: {},
     provides: Object.create(null),
     optionsCache: new WeakMap(),
-    propsCache: new WeakMap(), // 存储格式化之后的 props配置 属性定义
-    emitsCache: new WeakMap() // 存储格式化之后的 emits配置 属性定义
+    propsCache: new WeakMap(), // key: options 配置对象, value: 存储格式化之后的 props配置 属性定义
+    emitsCache: new WeakMap() // key: options 配置对象, value: 存储格式化之后的 emits配置 属性定义
   }
 }
 
@@ -178,7 +178,7 @@ export function createAppAPI<HostElement>(
   render: RootRenderFunction,
   hydrate?: RootHydrateFunction
 ): CreateAppFunction<HostElement> {
-  return function createApp(rootComponent /** Vue 配置对象 */, rootProps = null) {
+  return function createApp(rootComponent /** 根 Vue 实例配置对象 */, rootProps = null) {
     if (rootProps != null && !isObject(rootProps)) {
       __DEV__ && warn(`root props passed to app.mount() must be an object.`)
       rootProps = null
