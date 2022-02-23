@@ -195,7 +195,7 @@ export function createAppAPI<HostElement>(
       _props: rootProps, // passed props
       _container: null,
       _context: context,
-      _instance: null,
+      _instance: null, // 组件实例
 
       version,
 
@@ -310,6 +310,7 @@ export function createAppAPI<HostElement>(
             devtoolsInitApp(app, version)
           }
 
+          // 获取 instance.exposed 属性的 proxy
           return getExposeProxy(vnode.component!) || vnode.component!.proxy
         } else if (__DEV__) {
           warn(

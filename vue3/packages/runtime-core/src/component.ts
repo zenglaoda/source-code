@@ -531,6 +531,7 @@ export function createComponentInstance(
     sp: null
   }
   if (__DEV__) {
+    // 配置通用属性 publicPropertiesMap
     instance.ctx = createDevRenderContext(instance)
   } else {
     instance.ctx = { _: instance }
@@ -912,12 +913,14 @@ export function createSetupContext(
   }
 }
 
+// expose 的读取
 export function getExposeProxy(instance: ComponentInternalInstance) {
   if (instance.exposed) {
     return (
       instance.exposeProxy ||
       (instance.exposeProxy = new Proxy(proxyRefs(markRaw(instance.exposed)), {
         get(target, key: string) {
+          // 先读取 proxy，若是没有便读取实例上的
           if (key in target) {
             return target[key]
           } else if (key in publicPropertiesMap) {

@@ -27,6 +27,7 @@ type RefBase<T> = {
   value: T
 }
 
+// 建立 ref 与 ReactEffect 之间的关系
 export function trackRefValue(ref: RefBase<any>) {
   if (isTracking()) {
     ref = toRaw(ref)
@@ -45,6 +46,7 @@ export function trackRefValue(ref: RefBase<any>) {
   }
 }
 
+// 通过 ref 值的改变触发更新
 export function triggerRefValue(ref: RefBase<any>, newVal?: any) {
   ref = toRaw(ref)
   if (ref.dep) {
@@ -122,10 +124,12 @@ class RefImpl<T> {
   }
 }
 
+// 触发ref 更新
 export function triggerRef(ref: Ref) {
   triggerRefValue(ref, __DEV__ ? ref.value : void 0)
 }
 
+// 获取 ref 值
 export function unref<T>(ref: T | Ref<T>): T {
   return isRef(ref) ? (ref.value as any) : ref
 }

@@ -4653,7 +4653,6 @@ var Vue = (function (exports) {
                 mount(rootContainer, isHydrate, isSVG) {
                     if (!isMounted) {
                         const vnode = createVNode(rootComponent, rootProps);
-                        console.log(vnode)
                         // store app context on the root VNode.
                         // this will be set on the root instance on initial mount.
                         vnode.appContext = context;

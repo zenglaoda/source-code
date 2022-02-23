@@ -330,6 +330,9 @@ function baseCreateRenderer(
   createHydrationFns: typeof createHydrationFunctions
 ): HydrationRenderer
 
+
+// patch -> processComponent -> mountComponent -> setupRenderEffect
+
 // implementation
 function baseCreateRenderer(
   options: RendererOptions,
@@ -1233,6 +1236,7 @@ function baseCreateRenderer(
         startMeasure(instance, `init`)
       }
       // 初始化 props, attrs, render 方法， ctx
+      // 执行 setup 方法
       setupComponent(instance)
       if (__DEV__) {
         endMeasure(instance, `init`)

@@ -25,31 +25,55 @@
         </p>
         <p>
             {{count}}
-            <button @click="addCount">Add</button>
         </p>
     </div>
     <script>
-        const { ref } = Vue;
+        const { ref, toRef } = Vue;
         const app = Vue.createApp({
             data() {
                 return {
-                    name: '',
+                    name: 'zeng',
                 };
             },
             setup(props, context) {
                 const count = ref(0);
-                function addCount() {
-                    count.value += 1;
-                }
+                function add() {}
                 return {
+                    name,
                     count,
-                    addCount
+                    add
                 };
             },
+            beforeCreate() {
+                console.log(this);
+            }
         });
         app.mount('#app');
-        console.log(app._component.render.toString());
+        // console.log(app._component.render.toString());
     </script>
 
+    <script>
+        var data = {
+            name: 'zeng'
+        };
+        var proxy = new Proxy(data, {
+            get(target, key, receiver) {
+                console.log('get', target, key);
+                Reflect.get(target, key, receiver);
+            },
+            set(target, key, value, receiver) {
+                console.log('set', target, key);
+                Reflect.get(target, key, value, receiver);
+                return true;
+            },
+            
+        });
+        Object.defineProperty(proxy, 'age', {
+            configurable: true,
+            enumerable: true,
+            value: 2
+        });
+        console.log(proxy);
+    </script>
 </body>
 </html>

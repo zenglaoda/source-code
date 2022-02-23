@@ -25,6 +25,7 @@ export const createDep = (effects?: ReactiveEffect[]): Dep => {
   return dep
 }
 
+// 相同的进制位数都存在 1 
 export const wasTracked = (dep: Dep): boolean => (dep.w & trackOpBit) > 0
 
 export const newTracked = (dep: Dep): boolean => (dep.n & trackOpBit) > 0
@@ -37,6 +38,7 @@ export const initDepMarkers = ({ deps }: ReactiveEffect) => {
   }
 }
 
+// 更新 effect 中的 deps(去除未引用的依赖，添加新的依赖)
 export const finalizeDepMarkers = (effect: ReactiveEffect) => {
   const { deps } = effect
   if (deps.length) {

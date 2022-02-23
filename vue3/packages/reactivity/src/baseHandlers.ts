@@ -32,6 +32,7 @@ import { isRef } from './ref'
 
 const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`)
 
+// 获取 typeof Symbol[key] === 'symbol' 的属性 
 const builtInSymbols = new Set(
   Object.getOwnPropertyNames(Symbol)
     .map(key => (Symbol as any)[key])
@@ -125,12 +126,14 @@ function createGetter(isReadonly = false, shallow = false) {
 
     const targetIsArray = isArray(target)
 
+    // 读取数组的 indexOf, lastIndexOf, push 等方法时
     if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
       return Reflect.get(arrayInstrumentations, key, receiver)
     }
 
     const res = Reflect.get(target, key, receiver)
 
+    // 读取 Symol 相关方法, 或不可追踪的键
     if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
       return res
     }

@@ -181,8 +181,8 @@ export function shallowReadonly<T extends object>(
 function createReactiveObject(
   target: Target,
   isReadonly: boolean,
-  baseHandlers: ProxyHandler<any>,
-  collectionHandlers: ProxyHandler<any>,
+  baseHandlers: ProxyHandler<any>, // Proxy Object, Array   mutableHandlers
+  collectionHandlers: ProxyHandler<any>, // Proxy WeakSet, WeakMap
   proxyMap: WeakMap<Target, any>
 ) {
   if (!isObject(target)) {

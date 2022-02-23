@@ -232,6 +232,7 @@ export {
   vModelSelect,
   vModelDynamic
 } from './directives/vModel'
+// 事件修饰符 stopPropgation, preventDefault, 键盘事件: esc, ctrl 
 export { withModifiers, withKeys } from './directives/vOn'
 export { vShow } from './directives/vShow'
 

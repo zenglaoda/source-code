@@ -242,6 +242,7 @@ export function trackEffects(
   }
 }
 
+// 设置监听对象的属性值时，触发更新
 export function trigger(
   target: object,
   type: TriggerOpTypes,
